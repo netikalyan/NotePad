@@ -22,20 +22,30 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.notepad;
+package com.netikalyan.notepad.ui.edit;
 
-import org.junit.Test;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModel;
+import android.util.Log;
 
-import static org.junit.Assert.assertEquals;
+import com.netikalyan.notepad.db.Note;
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
-public class ExampleUnitTest {
-    @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+public class EditViewModel extends ViewModel {
+
+    private static final String TAG = "NotesEditViewModel";
+    private final MutableLiveData<Note> selected = new MutableLiveData<>();
+
+    public void select(Note value) {
+        Log.d(TAG, "select. Note Content = " + value.getContent());
+        selected.setValue(value);
+    }
+
+    public LiveData<Note> getSelected() {
+        Log.d(TAG, "getSelected");
+        if (selected.getValue() != null) {
+            Log.d(TAG, "Note Content = " + selected.getValue().getContent());
+        }
+        return selected;
     }
 }

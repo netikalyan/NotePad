@@ -22,20 +22,34 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.notepad;
+package com.netikalyan.notepad.db;
 
-import org.junit.Test;
+import android.arch.lifecycle.LiveData;
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
-import static org.junit.Assert.assertEquals;
+import java.util.List;
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
-public class ExampleUnitTest {
-    @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
-    }
+@Dao
+public interface NoteDAO {
+    @Query("SELECT * from notes_table")
+    LiveData<List<Note>> getAllNotes();
+
+    @Query("SELECT * from notes_table WHERE title LIKE :title")
+    Note findByTitle(String title);
+
+    @Query("DELETE FROM notes_table")
+    void deleteAllNotes();
+
+    @Insert
+    void insert(Note note);
+
+    @Delete
+    void delete(Note note);
+
+    @Update
+    void update(Note note);
 }

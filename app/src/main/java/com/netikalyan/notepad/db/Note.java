@@ -22,20 +22,50 @@
  * SOFTWARE.
  */
 
-package com.netikalyan.notepad;
+package com.netikalyan.notepad.db;
 
-import org.junit.Test;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
-import static org.junit.Assert.assertEquals;
+@Entity(tableName = "notes_table")
+public class Note {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(typeAffinity = ColumnInfo.INTEGER)
+    private int uid;
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
-public class ExampleUnitTest {
-    @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+    @ColumnInfo(name = "title", typeAffinity = ColumnInfo.TEXT)
+    private String mTitle;
+
+    @ColumnInfo(name = "content", typeAffinity = ColumnInfo.TEXT)
+    private String mContent;
+
+    public Note() {
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setTitle(String text) {
+        mTitle = text;
+    }
+
+    public void setContent(@NonNull String text) {
+        mContent = text;
+    }
+
+    public String getTitle() {
+        return mTitle;
+    }
+
+    @NonNull
+    public String getContent() {
+        return mContent;
     }
 }
