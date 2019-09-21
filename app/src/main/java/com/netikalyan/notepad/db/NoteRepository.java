@@ -33,15 +33,27 @@ import java.util.List;
 public class NoteRepository {
     private final NoteDAO mNoteDAO;
     private final LiveData<List<Note>> mNotesList;
+    private final LiveData<List<Note>> mArchivedNotesList;
+    private final LiveData<List<Note>> mDeletedNotesList;
 
     public NoteRepository(Application application) {
         NoteDatabase database = NoteDatabase.getDatabase(application);
         mNoteDAO = database.noteDAO();
         mNotesList = mNoteDAO.getAllNotes();
+        mArchivedNotesList = mNoteDAO.getArchivedNotes();
+        mDeletedNotesList = mNoteDAO.getDeletedNotes();
     }
 
     public LiveData<List<Note>> getAllNotes() {
         return mNotesList;
+    }
+
+    public LiveData<List<Note>> getArchivedNotes() {
+        return mArchivedNotesList;
+    }
+
+    public LiveData<List<Note>> getDeletedNotes() {
+        return mDeletedNotesList;
     }
 
     public void insert(Note note) {

@@ -28,7 +28,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -44,8 +43,7 @@ import com.netikalyan.notepad.ui.list.NoteListFragment;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnNoteSelectedListener {
     private static final String TAG = "NotesMainActivity";
-
-    //private boolean mIsDualPane;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +64,8 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        addListFragment();
+        fragmentManager = getSupportFragmentManager();
+        addListFragment(NoteListFragment.ALL_NOTES);
     }
 
     @Override
@@ -102,25 +101,22 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Log.d(TAG, "onNavigationItemSelected");
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
+        if (id == R.id.nav_archive) {
+            addListFragment(NoteListFragment.ARCHIVED_NOTES);
+        } else if (id == R.id.nav_delete) {
+            addListFragment(NoteListFragment.DELETED_NOTES);
         } else if (id == R.id.nav_tools) {
-
+            //TODO
         } else if (id == R.id.nav_share) {
-
+            //TODO
         } else if (id == R.id.nav_send) {
-
+            //TODO
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -128,27 +124,22 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void addListFragment() {
+    private void addListFragment(int notesType) {
         Log.d(TAG, "addListFragment");
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Bundle bundle = new Bundle();
+        bundle.putInt(NoteListFragment.NOTES_TYPE, notesType);
         NoteListFragment fragment = new NoteListFragment();
-        fragmentTransaction.replace(R.id.fragmentContainer, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        fragment.setArguments(bundle);
+        fragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
     }
 
     private void addContentFragment(boolean isNewNote) {
         Log.d(TAG, "addContentFragment");
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        EditFragment fragment = new EditFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean("NEW_NOTE", isNewNote);
+        EditFragment fragment = new EditFragment();
         fragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.fragmentContainer, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        fragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).addToBackStack(null).commit();
     }
 
     @Override

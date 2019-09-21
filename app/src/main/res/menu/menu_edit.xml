@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ MIT License
   ~
   ~ Copyright (c) 2019 netikalyan
@@ -22,24 +22,31 @@
   ~ SOFTWARE.
   -->
 
-<resources>
-    <string name="app_name">NotePad</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
-    <string name="menu_categories">Categories</string>
-    <string name="action_grid_layout">Grid Layout</string>
-    <string name="action_linear_layout">Linear Layout</string>
-    <string name="action_save">Save</string>
-    <string name="action_delete">Delete</string>
-    <string name="action_archive">Archive</string>
-    <string name="menu_deleted">Deleted</string>
-    <string name="menu_archived">Archived</string>
-    <string name="menu_uncategorised">Uncategorised</string>
-</resources>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_menu_save"
+        android:icon="@drawable/ic_action_save"
+        android:title="@string/action_save"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_menu_delete"
+        android:icon="@drawable/ic_action_delete"
+        android:title="@string/action_delete"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_menu_archive"
+        android:icon="@drawable/ic_action_archive"
+        android:title="@string/action_archive"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/nav_share"
+        android:icon="@drawable/ic_menu_share"
+        android:title="@string/menu_share"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/nav_send"
+        android:icon="@drawable/ic_menu_send"
+        android:title="@string/menu_send"
+        app:showAsAction="ifRoom" />
+</menu>

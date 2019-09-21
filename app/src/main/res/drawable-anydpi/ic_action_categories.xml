@@ -22,24 +22,14 @@
   ~ SOFTWARE.
   -->
 
-<resources>
-    <string name="app_name">NotePad</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
-    <string name="menu_categories">Categories</string>
-    <string name="action_grid_layout">Grid Layout</string>
-    <string name="action_linear_layout">Linear Layout</string>
-    <string name="action_save">Save</string>
-    <string name="action_delete">Delete</string>
-    <string name="action_archive">Archive</string>
-    <string name="menu_deleted">Deleted</string>
-    <string name="menu_archived">Archived</string>
-    <string name="menu_uncategorised">Uncategorised</string>
-</resources>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#333333"
+    android:alpha="0.6">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M8.59,16.34l4.58,-4.59 -4.58,-4.59L10,5.75l6,6 -6,6z" />
+</vector>

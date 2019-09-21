@@ -40,17 +40,31 @@ public class NoteViewModel extends AndroidViewModel {
     private static final String TAG = "NotesViewModel";
     private final NoteRepository mRepository;
     private final LiveData<List<Note>> mAllNotes;
+    private final LiveData<List<Note>> mArchivedNotes;
+    private final LiveData<List<Note>> mDeletedNotes;
 
     public NoteViewModel(@NonNull Application application) {
         super(application);
         Log.d(TAG, "NoteViewModel");
         mRepository = new NoteRepository(application);
         mAllNotes = mRepository.getAllNotes();
+        mArchivedNotes = mRepository.getArchivedNotes();
+        mDeletedNotes = mRepository.getDeletedNotes();
     }
 
     public LiveData<List<Note>> getAllNotes() {
         Log.d(TAG, "getAllNotes");
         return mAllNotes;
+    }
+
+    public LiveData<List<Note>> getArchivedNotes() {
+        Log.d(TAG, "getArchivedNotes");
+        return mArchivedNotes;
+    }
+
+    public LiveData<List<Note>> getDeletedNotes() {
+        Log.d(TAG, "getDeletedNotes");
+        return mDeletedNotes;
     }
 
     public void insert(Note note) {

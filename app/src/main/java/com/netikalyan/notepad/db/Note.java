@@ -27,11 +27,10 @@ package com.netikalyan.notepad.db;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.support.annotation.NonNull;
 
 @Entity(tableName = "notes_table")
 public class Note {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     @ColumnInfo(typeAffinity = ColumnInfo.INTEGER)
     private int uid;
 
@@ -40,6 +39,12 @@ public class Note {
 
     @ColumnInfo(name = "content", typeAffinity = ColumnInfo.TEXT)
     private String mContent;
+
+    @ColumnInfo(name = "archived", typeAffinity = ColumnInfo.INTEGER)
+    private boolean isArchived;
+
+    @ColumnInfo(name = "deleted", typeAffinity = ColumnInfo.INTEGER)
+    private boolean isDeleted;
 
     public Note() {
     }
@@ -56,7 +61,7 @@ public class Note {
         mTitle = text;
     }
 
-    public void setContent(@NonNull String text) {
+    public void setContent(String text) {
         mContent = text;
     }
 
@@ -64,8 +69,23 @@ public class Note {
         return mTitle;
     }
 
-    @NonNull
     public String getContent() {
         return mContent;
+    }
+
+    public boolean isArchived() {
+        return isArchived;
+    }
+
+    public void setArchived(boolean archived) {
+        isArchived = archived;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

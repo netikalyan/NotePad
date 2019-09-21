@@ -27,6 +27,7 @@ package com.netikalyan.notepad.ui.edit;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.netikalyan.notepad.db.Note;
@@ -36,11 +37,12 @@ public class EditViewModel extends ViewModel {
     private static final String TAG = "NotesEditViewModel";
     private final MutableLiveData<Note> selected = new MutableLiveData<>();
 
-    public void select(Note value) {
+    public void select(@NonNull Note value) {
         Log.d(TAG, "select. Note Content = " + value.getContent());
         selected.setValue(value);
     }
 
+    @NonNull
     public LiveData<Note> getSelected() {
         Log.d(TAG, "getSelected");
         if (selected.getValue() != null) {

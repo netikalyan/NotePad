@@ -25,13 +25,18 @@
 package com.netikalyan.notepad.ui.edit;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -44,9 +49,22 @@ public class EditFragment extends Fragment {
 
     private static final String TAG = "NotesEditFragment";
     private EditViewModel mEditViewModel;
-    private NoteViewModel mViewModel;
     private EditText mNoteText;
+    private EditText mNoteTitle;
     private boolean mIsNewNote;
+    private boolean mIsTitleEmpty;
+    private boolean mIsContentEmpty;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -55,8 +73,45 @@ public class EditFragment extends Fragment {
         Log.d(TAG, "onCreateView");
         View mainView = inflater.inflate(R.layout.edit_fragment, container, false);
         mNoteText = mainView.findViewById(R.id.noteViewer);
-        FloatingActionButton fab = mainView.findViewById(R.id.fabSave);
-        fab.setOnClickListener(view -> saveNote());
+        mNoteText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mEditViewModel.getSelected().getValue().setContent(s.toString());
+                if (s.length() == 0) {
+                    mIsTitleEmpty = true;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        mNoteTitle = mainView.findViewById(R.id.noteTitle);
+        mNoteTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mEditViewModel.getSelected().getValue().setTitle(s.toString());
+                if (s.length() == 0) {
+                    mIsContentEmpty = true;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         Bundle bundle = getArguments();
         if (null != bundle) {
             mIsNewNote = bundle.getBoolean("NEW_NOTE");
@@ -68,16 +123,63 @@ public class EditFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
-        mEditViewModel = ViewModelProviders.of(getActivity()).get(EditViewModel.class);
-        mViewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
+        mEditViewModel = ViewModelProviders.of(this).get(EditViewModel.class);
         if (mIsNewNote)
             mEditViewModel.select(new Note());
-        mEditViewModel.getSelected().observe(this, note -> mNoteText.setText(note.getContent()));
+        mEditViewModel.getSelected().observe(this, note -> {
+            mNoteTitle.setText(note.getTitle());
+            mNoteText.setText(note.getContent());
+        });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (menu != null)
+            menu.clear();
+        inflater.inflate(R.menu.menu_edit, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_menu_save) {
+            saveNote();
+        }
+        if (item.getItemId() == R.id.action_menu_delete) {
+            deleteNote();
+        }
+        if (item.getItemId() == R.id.action_menu_archive) {
+            archiveNote();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void archiveNote() {
+        Log.d(TAG, "archiveNote");
+        NoteViewModel mViewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
+        mEditViewModel.getSelected().getValue().setArchived(true);
+        mViewModel.update(mEditViewModel.getSelected().getValue());
+    }
+
+    private void deleteNote() {
+        Log.d(TAG, "deleteNote");
+        NoteViewModel mViewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
+        mViewModel.delete(mEditViewModel.getSelected().getValue());
     }
 
     private void saveNote() {
         Log.d(TAG, "saveNote");
-        //Objects.requireNonNull(mEditViewModel.getSelected().getValue()).setContent(mNoteText.getText().toString());
+        NoteViewModel mViewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
         mViewModel.insert(mEditViewModel.getSelected().getValue());
     }
 }

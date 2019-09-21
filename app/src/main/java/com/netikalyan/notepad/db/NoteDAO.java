@@ -28,6 +28,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
@@ -35,8 +36,14 @@ import java.util.List;
 
 @Dao
 public interface NoteDAO {
-    @Query("SELECT * from notes_table")
+    @Query("SELECT * from notes_table WHERE archived = 0 AND deleted = 0")
     LiveData<List<Note>> getAllNotes();
+
+    @Query("SELECT * from notes_table WHERE archived = 1")
+    LiveData<List<Note>> getArchivedNotes();
+
+    @Query("SELECT * from notes_table WHERE deleted = 1")
+    LiveData<List<Note>> getDeletedNotes();
 
     @Query("SELECT * from notes_table WHERE title LIKE :title")
     Note findByTitle(String title);
@@ -44,7 +51,7 @@ public interface NoteDAO {
     @Query("DELETE FROM notes_table")
     void deleteAllNotes();
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Note note);
 
     @Delete

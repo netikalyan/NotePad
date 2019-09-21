@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ MIT License
   ~
   ~ Copyright (c) 2019 netikalyan
@@ -44,10 +43,22 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <!--
+        <include layout="@layout/content_main" />
+    -->
+
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize" />
+        android:layout_marginTop="?attr/actionBarSize">
+        <!--
+                <fragment
+                    android:id="@+id/listFragment"
+                    android:name="com.netikalyan.notepad.ui.list.NoteListFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+        -->
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>
