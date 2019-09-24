@@ -60,6 +60,7 @@ public class NoteListFragment extends Fragment {
     private NoteListAdapter mListAdapter;
     private RecyclerView mRecyclerView;
     private SharedPreferences mPreferences;
+    private int mNotesType = ALL_NOTES;
 
     @Override
     public void onAttach(Context context) {
@@ -76,6 +77,10 @@ public class NoteListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
+        Bundle bundle = getArguments();
+        if (null != bundle) {
+            mNotesType = bundle.getInt(NOTES_TYPE, ALL_NOTES);
+        }
     }
 
     @Nullable
@@ -98,8 +103,20 @@ public class NoteListFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
-        NoteViewModel mViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-        mViewModel.getAllNotes().observe(getActivity(), notes -> mListAdapter.setNotes(notes));
+        NoteViewModel mViewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
+        switch (mNotesType) {
+            case ALL_NOTES:
+                mViewModel.getAllNotes().observe(getActivity(), notes -> mListAdapter.setNotes(notes));
+                break;
+            case ARCHIVED_NOTES:
+                mViewModel.getArchivedNotes().observe(getActivity(), notes -> mListAdapter.setNotes(notes));
+                break;
+            case DELETED_NOTES:
+                mViewModel.getDeletedNotes().observe(getActivity(), notes -> mListAdapter.setNotes(notes));
+                break;
+            default:
+                break;
+        }
         mPreferences = getActivity().getApplicationContext().getSharedPreferences(NoteListFragment.class.getCanonicalName(), Context.MODE_PRIVATE);
         setLayoutManager(mPreferences.getInt(PREF_LAYOUT, LINEAR_LAYOUT));
     }

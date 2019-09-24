@@ -74,11 +74,18 @@ public class NoteViewModel extends AndroidViewModel {
 
     public void delete(Note note) {
         Log.d(TAG, "delete");
-        mRepository.delete(note);
+        note.setDeleted(true);
+        mRepository.update(note);
     }
 
     public void update(Note note) {
         Log.d(TAG, "update");
+        mRepository.update(note);
+    }
+
+    public void archive(Note note) {
+        Log.d(TAG, "archive");
+        note.setArchived(true);
         mRepository.update(note);
     }
 

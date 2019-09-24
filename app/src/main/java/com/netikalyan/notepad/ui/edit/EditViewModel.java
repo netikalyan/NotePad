@@ -38,7 +38,7 @@ public class EditViewModel extends ViewModel {
     private final MutableLiveData<Note> selected = new MutableLiveData<>();
 
     public void select(@NonNull Note value) {
-        Log.d(TAG, "select. Note Content = " + value.getContent());
+        Log.d(TAG, "select. Note Title = " + value.getTitle() + " Content = " + value.getContent());
         selected.setValue(value);
     }
 
@@ -46,7 +46,9 @@ public class EditViewModel extends ViewModel {
     public LiveData<Note> getSelected() {
         Log.d(TAG, "getSelected");
         if (selected.getValue() != null) {
-            Log.d(TAG, "Note Content = " + selected.getValue().getContent());
+            Log.d(TAG, "getSelected. Note Title = " + selected.getValue().getTitle() + " Content = " + selected.getValue().getContent());
+        } else {
+            Log.e(TAG, "note is null");
         }
         return selected;
     }

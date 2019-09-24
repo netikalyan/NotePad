@@ -30,7 +30,7 @@ import android.arch.persistence.room.PrimaryKey;
 
 @Entity(tableName = "notes_table")
 public class Note {
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(typeAffinity = ColumnInfo.INTEGER)
     private int uid;
 

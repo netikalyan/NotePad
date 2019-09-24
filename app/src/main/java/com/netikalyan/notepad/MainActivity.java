@@ -107,15 +107,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_archive) {
+        if (id == R.id.nav_notes) {
+            addListFragment(NoteListFragment.ALL_NOTES);
+        } else if (id == R.id.nav_archive) {
             addListFragment(NoteListFragment.ARCHIVED_NOTES);
         } else if (id == R.id.nav_delete) {
             addListFragment(NoteListFragment.DELETED_NOTES);
         } else if (id == R.id.nav_tools) {
-            //TODO
-        } else if (id == R.id.nav_share) {
-            //TODO
-        } else if (id == R.id.nav_send) {
             //TODO
         }
 

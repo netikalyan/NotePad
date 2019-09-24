@@ -26,6 +26,8 @@ package com.netikalyan.notepad.ui.edit;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -73,6 +75,7 @@ public class EditFragment extends Fragment {
         Log.d(TAG, "onCreateView");
         View mainView = inflater.inflate(R.layout.edit_fragment, container, false);
         mNoteText = mainView.findViewById(R.id.noteViewer);
+
         mNoteText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -83,13 +86,13 @@ public class EditFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mEditViewModel.getSelected().getValue().setContent(s.toString());
                 if (s.length() == 0) {
-                    mIsTitleEmpty = true;
+                    mIsContentEmpty = true;
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                mEditViewModel.getSelected().getValue().setContent(s.toString());
             }
         });
         mNoteTitle = mainView.findViewById(R.id.noteTitle);
@@ -103,15 +106,16 @@ public class EditFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mEditViewModel.getSelected().getValue().setTitle(s.toString());
                 if (s.length() == 0) {
-                    mIsContentEmpty = true;
+                    mIsTitleEmpty = true;
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                mEditViewModel.getSelected().getValue().setTitle(s.toString());
             }
         });
+
         Bundle bundle = getArguments();
         if (null != bundle) {
             mIsNewNote = bundle.getBoolean("NEW_NOTE");
@@ -123,12 +127,18 @@ public class EditFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
-        mEditViewModel = ViewModelProviders.of(this).get(EditViewModel.class);
+        mEditViewModel = ViewModelProviders.of(getActivity()).get(EditViewModel.class);
         if (mIsNewNote)
             mEditViewModel.select(new Note());
         mEditViewModel.getSelected().observe(this, note -> {
-            mNoteTitle.setText(note.getTitle());
-            mNoteText.setText(note.getContent());
+            if (null != note.getTitle()) {
+                Log.d(TAG, "Title: " + note.getTitle());
+                mNoteTitle.setText(note.getTitle());
+            }
+            if (null != note.getContent()) {
+                Log.d(TAG, "Content: " + note.getContent());
+                mNoteText.setText(note.getContent());
+            }
         });
     }
 
@@ -161,25 +171,51 @@ public class EditFragment extends Fragment {
         if (item.getItemId() == R.id.action_menu_archive) {
             archiveNote();
         }
+        if (item.getItemId() == R.id.nav_share) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, mEditViewModel.getSelected().getValue().getContent());
+            sendIntent.setType("text/plain");
+
+            Intent shareIntent = Intent.createChooser(sendIntent, getString(R.string.share_notes));
+            startActivity(shareIntent);
+        }
+        if (item.getItemId() == R.id.nav_send) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.setDataAndType(Uri.parse("mailto:"), "plaint/text");
+            sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{});
+            sendIntent.putExtra(Intent.EXTRA_SUBJECT, mEditViewModel.getSelected().getValue().getTitle());
+            sendIntent.putExtra(Intent.EXTRA_TEXT, mEditViewModel.getSelected().getValue().getContent());
+
+            Intent shareIntent = Intent.createChooser(sendIntent, getString(R.string.send_mail));
+            startActivity(shareIntent);
+        }
         return super.onOptionsItemSelected(item);
     }
 
     private void archiveNote() {
         Log.d(TAG, "archiveNote");
         NoteViewModel mViewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
-        mEditViewModel.getSelected().getValue().setArchived(true);
-        mViewModel.update(mEditViewModel.getSelected().getValue());
+        mViewModel.archive(mEditViewModel.getSelected().getValue());
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     private void deleteNote() {
         Log.d(TAG, "deleteNote");
         NoteViewModel mViewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
         mViewModel.delete(mEditViewModel.getSelected().getValue());
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     private void saveNote() {
-        Log.d(TAG, "saveNote");
+        Log.d(TAG, "saveNote : " + mIsNewNote);
         NoteViewModel mViewModel = ViewModelProviders.of(getActivity()).get(NoteViewModel.class);
-        mViewModel.insert(mEditViewModel.getSelected().getValue());
+        if (mIsNewNote) {
+            mViewModel.insert(mEditViewModel.getSelected().getValue());
+            mIsNewNote = false;
+        } else {
+            mViewModel.update(mEditViewModel.getSelected().getValue());
+        }
     }
 }
